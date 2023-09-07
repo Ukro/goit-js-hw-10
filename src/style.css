@@ -2,3 +2,8 @@ img {
   max-width: 40%;
   height: auto;      
 }
+
+.class-cat
+{
+  display: flex;
+}

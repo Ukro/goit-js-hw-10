@@ -38,11 +38,16 @@ document.getElementById('breed_selector').appendChild(option);
 
 function showBreedImage(index)
 { 
+  
+
+
+
   document.getElementById("breed_image").src= storedBreeds[index].image.url;
+
+
+  document.getElementById("breed_h").textContent= storedBreeds[index].name;
+  document.getElementById("breed_json").textContent= storedBreeds[index].description;
+  document.getElementById("breed_temp").textContent= "Temperament: " + storedBreeds[index].temperament;
   
-  document.getElementById("breed_json").textContent= storedBreeds[index].temperament
-  
-  
-  document.getElementById("wiki_link").href= storedBreeds[index].wikipedia_url
-  document.getElementById("wiki_link").innerHTML= storedBreeds[index].wikipedia_url
+
 }
