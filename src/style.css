@@ -9,18 +9,30 @@ img {
 }
 
 
-.loader {
+.loader  {
   display: none;
   font-weight: bold;
   color: #333;
 }
 
-.breed-select {
-  display: block;
+
+ .error {
+  display: none;
+  font-weight: bold;
+  color: #333;
 }
 
-.cat-info {
+
+
+
+
+
+/* .breed-select {
+  display: block;
+} */
+
+/* .cat-info {
   display: none;
-}
+} */
 
 
