@@ -12,6 +12,13 @@ function toggleLoader(showLoader) {
   }
 }
 
+// Функція для показу повідомлення про помилку
+function showError(message) {
+  const errorElement = document.querySelector('.error');
+  errorElement.textContent = message;
+  errorElement.style.display = 'block';
+}
+
 toggleLoader(true); // Початково показуємо завантажувач
 
 fetch(url, {
@@ -20,6 +27,9 @@ fetch(url, {
   }
 })
   .then((response) => {
+    if (!response.ok) {
+      throw new Error('Oops! Something went wrong! Try reloading the page!');
+    }
     return response.json();
   })
   .then((data) => {
@@ -45,25 +55,28 @@ fetch(url, {
   })
   .catch(function (error) {
     console.log(error);
+    // Показати текст помилки на сторінці
+    showError(error.message);
+    // Ховаємо завантажувач
+    toggleLoader(false);
   });
 
-  function showBreedImage(index) {
-    toggleLoader(true); // Показуємо завантажувач під час запиту інформації про кота
-  
-    document.getElementById('breed_image').src = storedBreeds[index].image.url;
-    document.getElementById('breed_h').textContent = storedBreeds[index].name;
-    document.getElementById('breed_json').textContent = storedBreeds[index].description;
-    document.getElementById('breed_temp').textContent =
-      'Temperament: ' + storedBreeds[index].temperament;
-  
-    const breedImage = document.getElementById('breed_image');
-    breedImage.onload = function () {
-      // Після завершення завантаження зображення ховаємо завантажувач
-      toggleLoader(false);
-    };
-    breedImage.onerror = function () {
-      // У випадку помилки завантаження зображення також ховаємо завантажувач
-      toggleLoader(false);
-    };
-  }
-  
+function showBreedImage(index) {
+  toggleLoader(true); // Показуємо завантажувач під час запиту інформації про кота
+
+  document.getElementById('breed_image').src = storedBreeds[index].image.url;
+  document.getElementById('breed_h').textContent = storedBreeds[index].name;
+  document.getElementById('breed_json').textContent = storedBreeds[index].description;
+  document.getElementById('breed_temp').textContent =
+    'Temperament: ' + storedBreeds[index].temperament;
+
+  const breedImage = document.getElementById('breed_image');
+  breedImage.onload = function () {
+    // Після завершення завантаження зображення ховаємо завантажувач
+    toggleLoader(false);
+  };
+  breedImage.onerror = function () {
+    // У випадку помилки завантаження зображення також ховаємо завантажувач
+    toggleLoader(false);
+  };
+}
