@@ -7,3 +7,20 @@ img {
 {
   display: flex;
 }
+
+
+.loader {
+  display: none;
+  font-weight: bold;
+  color: #333;
+}
+
+.breed-select {
+  display: block;
+}
+
+.cat-info {
+  display: none;
+}
+
+
