@@ -1,5 +1,7 @@
 import { fetchBreeds } from './api.js';
 
+//import Notiflix from 'notiflix';
+
 let storedBreeds = [];
 
 function toggleLoader(showLoader) {
@@ -23,7 +25,7 @@ function showBreedInformation(index) {
   const breedJson = document.getElementById('breed_json');
   const breedTemp = document.getElementById('breed_temp');
 
-  // Скрываем изображение и описание перед загрузкой
+  //Скрываем изображение и описание перед загрузкой
   breedImage.style.display = 'none';
   breedH.style.display = 'none';
   breedJson.style.display = 'none';
@@ -34,7 +36,7 @@ function showBreedInformation(index) {
     toggleLoader(true);
 
     breedImage.onload = function () {
-      // После успешной загрузки изображения отображаем его
+      //После успешной загрузки изображения отображаем его
       breedImage.style.display = 'block';
       breedH.style.display = 'block';
       breedJson.style.display = 'block';
@@ -49,6 +51,8 @@ function showBreedInformation(index) {
       toggleLoader(false);
     };
 
+    if (storedBreeds[index].image.url === null) { breedSelector.style.display = 'block'; breack;}
+
     breedImage.src = storedBreeds[index].image.url;
     breedH.textContent = storedBreeds[index].name;
     breedJson.textContent = storedBreeds[index].description;
@@ -61,14 +65,12 @@ function showBreedInformation(index) {
   try {
     storedBreeds = await fetchBreeds();
 
-    const breedSelector = document.getElementById('breed_selector');
+    const breedSelector = document.getElementById('selectElement');
 
     for (let i = 0; i < storedBreeds.length; i++) {
       const breed = storedBreeds[i];
+      // if (!breed.image) continue;
       let option = document.createElement('option');
-
-      if (!breed.image) continue;
-
       option.value = i;
       option.innerHTML = `${breed.name}`;
       breedSelector.appendChild(option);

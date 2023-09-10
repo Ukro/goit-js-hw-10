@@ -12,12 +12,14 @@ const axiosInstance = axios.create({
 export async function fetchBreeds() {
   try {
     const response = await axiosInstance.get('/v1/breeds');
-    if (!response.data) {
-      throw new Error('Oops! Something went wrong! Try reloading the page!');
-    }
+    //console.error(response.data);
+
+    // if (!response.data) {
+    //   throw new Error('Oops! Something went wrong! Try reloading the page!');
+    // }
     return response.data;
   } catch (error) {
-    console.error(error);
+    //console.error(error);
     throw error;
   }
 }
