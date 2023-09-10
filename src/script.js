@@ -1,8 +1,7 @@
-const url = `https://api.thecatapi.com/v1/breeds`;
-const api_key = "live_OTZ0kZEMYSwxwDnB16kaxm9MCIbUXWeuUaCndnhlVeVaPIZzx5rHDkvio8Le0nJh";
+import { fetchBreeds } from './api.js';
+
 let storedBreeds = [];
 
-// Функція для відображення/приховування завантажувача
 function toggleLoader(showLoader) {
   const loader = document.querySelector('.loader');
   if (showLoader) {
@@ -12,29 +11,42 @@ function toggleLoader(showLoader) {
   }
 }
 
-// Функція для показу повідомлення про помилку
 function showError(message) {
   const errorElement = document.querySelector('.error');
   errorElement.textContent = message;
   errorElement.style.display = 'block';
 }
 
-toggleLoader(true); // Початково показуємо завантажувач
+function showBreedInformation(index) {
+  const breedImage = document.getElementById('breed_image');
+  const breedH = document.getElementById('breed_h');
+  const breedJson = document.getElementById('breed_json');
+  const breedTemp = document.getElementById('breed_temp');
 
-fetch(url, {
-  headers: {
-    'x-api-key': api_key
+  if (index >= 0 && index < storedBreeds.length) {
+    breedImage.src = storedBreeds[index].image.url;
+    breedH.textContent = storedBreeds[index].name;
+    breedJson.textContent = storedBreeds[index].description;
+    breedTemp.textContent = 'Temperament: ' + storedBreeds[index].temperament;
+
+    breedImage.style.display = 'block';
+    breedH.style.display = 'block';
+    breedJson.style.display = 'block';
+    breedTemp.style.display = 'block';
+  } else {
+    breedImage.style.display = 'none';
+    breedH.style.display = 'none';
+    breedJson.style.display = 'none';
+    breedTemp.style.display = 'none';
   }
-})
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error('Oops! Something went wrong! Try reloading the page!');
-    }
-    return response.json();
-  })
-  .then((data) => {
-    data = data.filter((img) => img.image?.url != null);
-    storedBreeds = data;
+}
+
+(async function () {
+  toggleLoader(true);
+  try {
+    storedBreeds = await fetchBreeds();
+
+    const breedSelector = document.getElementById('breed_selector');
 
     for (let i = 0; i < storedBreeds.length; i++) {
       const breed = storedBreeds[i];
@@ -44,39 +56,17 @@ fetch(url, {
 
       option.value = i;
       option.innerHTML = `${breed.name}`;
-      document.getElementById('breed_selector').appendChild(option);
+      breedSelector.appendChild(option);
     }
 
-    // По закінченню завантаження списку порід ховаємо завантажувач
-    toggleLoader(false);
+    breedSelector.addEventListener('change', function () {
+      showBreedInformation(breedSelector.value);
+    });
 
-    // Показуємо першу породу за замовчуванням
-    showBreedImage(0);
-  })
-  .catch(function (error) {
-    console.log(error);
-    // Показати текст помилки на сторінці
+    toggleLoader(false);
+    breedSelector.style.display = 'block';
+  } catch (error) {
     showError(error.message);
-    // Ховаємо завантажувач
     toggleLoader(false);
-  });
-
-function showBreedImage(index) {
-  toggleLoader(true); // Показуємо завантажувач під час запиту інформації про кота
-
-  document.getElementById('breed_image').src = storedBreeds[index].image.url;
-  document.getElementById('breed_h').textContent = storedBreeds[index].name;
-  document.getElementById('breed_json').textContent = storedBreeds[index].description;
-  document.getElementById('breed_temp').textContent =
-    'Temperament: ' + storedBreeds[index].temperament;
-
-  const breedImage = document.getElementById('breed_image');
-  breedImage.onload = function () {
-    // Після завершення завантаження зображення ховаємо завантажувач
-    toggleLoader(false);
-  };
-  breedImage.onerror = function () {
-    // У випадку помилки завантаження зображення також ховаємо завантажувач
-    toggleLoader(false);
-  };
-}
+  }
+})();
