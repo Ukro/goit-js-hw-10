@@ -23,21 +23,36 @@ function showBreedInformation(index) {
   const breedJson = document.getElementById('breed_json');
   const breedTemp = document.getElementById('breed_temp');
 
+  // Скрываем изображение и описание перед загрузкой
+  breedImage.style.display = 'none';
+  breedH.style.display = 'none';
+  breedJson.style.display = 'none';
+  breedTemp.style.display = 'none';
+
   if (index >= 0 && index < storedBreeds.length) {
+    // Показываем загрузчик перед загрузкой изображения
+    toggleLoader(true);
+
+    breedImage.onload = function () {
+      // После успешной загрузки изображения отображаем его
+      breedImage.style.display = 'block';
+      breedH.style.display = 'block';
+      breedJson.style.display = 'block';
+      breedTemp.style.display = 'block';
+
+      // Скрываем загрузчик после успешной загрузки изображения
+      toggleLoader(false);
+    };
+
+    breedImage.onerror = function () {
+      // Скрываем загрузчик в случае ошибки загрузки изображения
+      toggleLoader(false);
+    };
+
     breedImage.src = storedBreeds[index].image.url;
     breedH.textContent = storedBreeds[index].name;
     breedJson.textContent = storedBreeds[index].description;
     breedTemp.textContent = 'Temperament: ' + storedBreeds[index].temperament;
-
-    breedImage.style.display = 'block';
-    breedH.style.display = 'block';
-    breedJson.style.display = 'block';
-    breedTemp.style.display = 'block';
-  } else {
-    breedImage.style.display = 'none';
-    breedH.style.display = 'none';
-    breedJson.style.display = 'none';
-    breedTemp.style.display = 'none';
   }
 }
 
@@ -64,7 +79,7 @@ function showBreedInformation(index) {
     });
 
     toggleLoader(false);
-    breedSelector.style.display = 'block';
+    breedSelector.style.display = 'block'; // Показываем селектор после загрузки
   } catch (error) {
     showError(error.message);
     toggleLoader(false);
