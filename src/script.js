@@ -24,6 +24,7 @@ function showBreedInformation(index) {
   const breedH = document.getElementById('breed_h');
   const breedJson = document.getElementById('breed_json');
   const breedTemp = document.getElementById('breed_temp');
+  const errorElement = document.querySelector('.error'); // Отримуємо елемент error
 
   //Скрываем изображение и описание перед загрузкой
   breedImage.style.display = 'none';
@@ -35,6 +36,16 @@ function showBreedInformation(index) {
     // Показываем загрузчик перед загрузкой изображения
     toggleLoader(true);
 
+    if (!storedBreeds[index].image || !storedBreeds[index].image.url) {
+      // Перевірка наявності змінної url у обраного елемента
+      toggleLoader(false);
+    
+      errorElement.style.display = 'error';
+
+      errorElement.style.display = 'block';
+      return;
+    }
+
     breedImage.onload = function () {
       //После успешной загрузки изображения отображаем его
       breedImage.style.display = 'block';
@@ -44,14 +55,13 @@ function showBreedInformation(index) {
 
       // Скрываем загрузчик после успешной загрузки изображения
       toggleLoader(false);
+      errorElement.style.display = 'none'; // При успішній загрузці елемента, ховаємо errorElement
     };
 
     breedImage.onerror = function () {
       // Скрываем загрузчик в случае ошибки загрузки изображения
       toggleLoader(false);
     };
-
-    if (storedBreeds[index].image.url === null) { breedSelector.style.display = 'block'; breack;}
 
     breedImage.src = storedBreeds[index].image.url;
     breedH.textContent = storedBreeds[index].name;
@@ -69,7 +79,6 @@ function showBreedInformation(index) {
 
     for (let i = 0; i < storedBreeds.length; i++) {
       const breed = storedBreeds[i];
-      // if (!breed.image) continue;
       let option = document.createElement('option');
       option.value = i;
       option.innerHTML = `${breed.name}`;
@@ -83,7 +92,6 @@ function showBreedInformation(index) {
     toggleLoader(false);
     breedSelector.style.display = 'block'; // Показываем селектор после загрузки
   } catch (error) {
-    showError(error.message);
     toggleLoader(false);
   }
 })();
